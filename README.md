@@ -508,6 +508,23 @@ Result Card (Crop + Confidence)
 
 The frontend provides image validation, loading state, backend health status, error handling, and a responsive layout.
 
+### Frontend API configuration
+
+The frontend reads the backend URL from the Vite environment variable `VITE_API_URL`.
+Create `frontend/.env` from `frontend/.env.example` for local development:
+
+```env
+VITE_API_URL=http://127.0.0.1:8000
+```
+
+For deployment, set `VITE_API_URL` to the public backend URL in the frontend hosting provider's environment settings before building the frontend. For example:
+
+```env
+VITE_API_URL=https://your-backend-domain.example.com
+```
+
+Vite embeds `VITE_API_URL` during the frontend build, so redeploy the frontend after changing this value. Do not include a trailing slash; the frontend appends `/health` and `/predict` automatically.
+
 ---
 
 ## 🏗️ Application Architecture
@@ -799,5 +816,6 @@ React + Vite Frontend
 Crop Prediction
 ```
 
-Final test performance: **98.33% accuracy on 120 unseen test images**, classifying **Maize, Paddy, Sugarcane, Sunflower, and Wheat**.#   c r o p - c l a s s i f i c a t i o n  
+Final test performance: **98.33% accuracy on 120 unseen test images**, classifying **Maize, Paddy, Sugarcane, Sunflower, and Wheat**.#   c r o p - c l a s s i f i c a t i o n 
+ 
  
