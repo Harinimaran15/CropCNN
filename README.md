@@ -404,11 +404,13 @@ The trained model is loaded once when the FastAPI application starts, avoiding r
 
 Backend dev server: `http://127.0.0.1:8000`
 
-The backend uses TensorFlow and cannot be deployed as a Vercel serverless function because its dependency bundle exceeds Vercel's 500 MB function limit. Deploy `backend/` to a Python-capable host such as Render or Railway, using this start command:
+The backend uses TensorFlow and cannot be deployed as a Vercel serverless function because its dependency bundle exceeds Vercel's 500 MB function limit. Deploy `backend/` to a Python-capable host such as Render or Railway. Configure the backend service root directory as `backend` and use this start command:
 
 ```text
 uvicorn app.main:app --host 0.0.0.0 --port $PORT
 ```
+
+The backend includes `backend/.python-version` to select Python 3.12. This is required because TensorFlow is not available for Python 3.14.
 
 Set `FRONTEND_URLS` on the backend to the deployed frontend origin. Multiple origins may be separated with commas:
 
