@@ -420,6 +420,8 @@ Set `FRONTEND_URLS` on the backend to the deployed frontend origin. Multiple ori
 FRONTEND_URLS=https://your-frontend-domain.example.com
 ```
 
+Vercel preview URLs ending in `.vercel.app` are also allowed by default. After setting `VITE_API_URL` in Vercel, redeploy the frontend; changing the variable does not update an already-built frontend deployment.
+
 ### Root endpoint
 
 ```http
