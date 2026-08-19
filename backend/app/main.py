@@ -10,6 +10,9 @@ from PIL import Image
 import io
 
 
+frontend_urls = os.getenv("FRONTEND_URLS", "http://localhost:5173,http://127.0.0.1:5173")
+
+
 app = FastAPI(
     title="Crop Classification API",
     description="API for classifying crop images using MobileNetV2.",
@@ -21,8 +24,9 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
+        url.strip()
+        for url in frontend_urls.split(",")
+        if url.strip()
     ],
     allow_credentials=True,
     allow_methods=["*"],

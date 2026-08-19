@@ -404,6 +404,18 @@ The trained model is loaded once when the FastAPI application starts, avoiding r
 
 Backend dev server: `http://127.0.0.1:8000`
 
+The backend uses TensorFlow and cannot be deployed as a Vercel serverless function because its dependency bundle exceeds Vercel's 500 MB function limit. Deploy `backend/` to a Python-capable host such as Render or Railway, using this start command:
+
+```text
+uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+
+Set `FRONTEND_URLS` on the backend to the deployed frontend origin. Multiple origins may be separated with commas:
+
+```env
+FRONTEND_URLS=https://your-frontend-domain.example.com
+```
+
 ### Root endpoint
 
 ```http
