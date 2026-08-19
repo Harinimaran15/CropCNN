@@ -422,6 +422,8 @@ FRONTEND_URLS=https://your-frontend-domain.example.com
 
 Vercel preview URLs ending in `.vercel.app` are also allowed by default. After setting `VITE_API_URL` in Vercel, redeploy the frontend; changing the variable does not update an already-built frontend deployment.
 
+If deploying the frontend on Render instead, set **Root Directory** to `frontend`, **Build Command** to `npm install && npm run build`, and **Publish Directory** to `dist`. Set `VITE_API_URL` in the frontend service environment variables before deploying.
+
 ### Root endpoint
 
 ```http
