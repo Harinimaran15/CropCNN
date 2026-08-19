@@ -396,7 +396,7 @@ Backend responsibilities:
 7. Select the highest-probability class
 8. Return crop and confidence
 
-The trained model is loaded once when the FastAPI application starts, avoiding reloading it for every request.
+The trained model is loaded lazily on the first prediction request and then reused, allowing the FastAPI server to bind its port before the large TensorFlow model is initialized.
 
 ---
 
@@ -411,6 +411,8 @@ uvicorn app.main:app --host 0.0.0.0 --port $PORT
 ```
 
 The backend includes `backend/.python-version` to select Python 3.12. This is required because TensorFlow is not available for Python 3.14.
+
+Do not use `uvicorn backend.app.main:app` when the Render root directory is `backend`; that causes `ModuleNotFoundError: No module named 'backend'`. The repository includes `render.yaml` with the correct service root, build command, and start command. In a manually created Render service, set **Root Directory** to `backend` and **Start Command** to the command shown above.
 
 Set `FRONTEND_URLS` on the backend to the deployed frontend origin. Multiple origins may be separated with commas:
 

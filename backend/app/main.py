@@ -8,6 +8,7 @@ from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 import io
+import threading
 
 
 frontend_urls = os.getenv("FRONTEND_URLS", "http://localhost:5173,http://127.0.0.1:5173")
@@ -56,8 +57,19 @@ CLASS_NAMES = [
 IMG_SIZE = (224, 224)
 
 
-# Load model once when the backend starts
-model = tf.keras.models.load_model(MODEL_PATH)
+model = None
+model_lock = threading.Lock()
+
+
+def get_model():
+    global model
+
+    if model is None:
+        with model_lock:
+            if model is None:
+                model = tf.keras.models.load_model(MODEL_PATH)
+
+    return model
 
 
 @app.get("/")
@@ -111,7 +123,7 @@ async def predict(file: UploadFile = File(...)):
         )
 
         # Prediction
-        predictions = model.predict(
+        predictions = get_model().predict(
             image_array,
             verbose=0
         )
