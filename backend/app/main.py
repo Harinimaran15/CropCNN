@@ -12,7 +12,10 @@ import threading
 
 
 frontend_urls = os.getenv("FRONTEND_URLS", "http://localhost:5173,http://127.0.0.1:5173")
-frontend_origin_regex = os.getenv("FRONTEND_ORIGIN_REGEX", r"https://[a-zA-Z0-9-]+\.vercel\.app")
+frontend_origin_regex = os.getenv(
+    "FRONTEND_ORIGIN_REGEX",
+    r"https://[a-zA-Z0-9-]+\.(vercel\.app|onrender\.com)",
+)
 
 
 app = FastAPI(

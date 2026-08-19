@@ -417,10 +417,10 @@ Do not use `uvicorn backend.app.main:app` when the Render root directory is `bac
 Set `FRONTEND_URLS` on the backend to the deployed frontend origin. Multiple origins may be separated with commas:
 
 ```env
-FRONTEND_URLS=https://your-frontend-domain.example.com
+FRONTEND_URLS=https://cropcnn-1.onrender.com
 ```
 
-Vercel preview URLs ending in `.vercel.app` are also allowed by default. After setting `VITE_API_URL` in Vercel, redeploy the frontend; changing the variable does not update an already-built frontend deployment.
+Vercel preview URLs ending in `.vercel.app` and Render frontend URLs ending in `.onrender.com` are also allowed by default. After changing backend CORS settings, redeploy or restart the backend; environment and code changes do not affect an already-running service.
 
 If deploying the frontend on Render instead, set **Root Directory** to `frontend`, **Build Command** to `npm install && npm run build`, and **Publish Directory** to `dist`. Set `VITE_API_URL` in the frontend service environment variables before deploying.
 
