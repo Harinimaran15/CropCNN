@@ -40,6 +40,7 @@ The project is a complete ML application with:
 - [Confusion Matrix](#-confusion-matrix)
 - [Backend](#-backend)
 - [API](#-api)
+- [Deployment](#-deployment)
 - [Frontend](#-frontend)
 - [Project Structure](#-project-structure)
 - [Running the Backend](#-running-the-backend)
@@ -404,25 +405,51 @@ The trained model is loaded lazily on the first prediction request and then reus
 
 Backend dev server: `http://127.0.0.1:8000`
 
-The backend uses TensorFlow and cannot be deployed as a Vercel serverless function because its dependency bundle exceeds Vercel's 500 MB function limit. Deploy `backend/` to a Python-capable host such as Render or Railway. Configure the backend service root directory as `backend` and use this start command:
+---
+
+### 🚀 Deployment
+
+The production frontend and backend are deployed separately:
+
+| Service | URL | Hosting |
+| --- | --- | --- |
+| Frontend | https://cropcnn-1.onrender.com | Render Static Site |
+| Backend API | https://cropcnn.onrender.com | Render Web Service |
+
+### Backend service
+
+Configure the Render backend service with:
 
 ```text
-uvicorn app.main:app --host 0.0.0.0 --port $PORT
+Root Directory: backend
+Build Command: pip install -r requirements.txt
+Start Command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+Python Version: 3.12.14
 ```
 
-The backend includes `backend/.python-version` to select Python 3.12. This is required because TensorFlow is not available for Python 3.14.
-
-Do not use `uvicorn backend.app.main:app` when the Render root directory is `backend`; that causes `ModuleNotFoundError: No module named 'backend'`. The repository includes `render.yaml` with the correct service root, build command, and start command. In a manually created Render service, set **Root Directory** to `backend` and **Start Command** to the command shown above.
-
-Set `FRONTEND_URLS` on the backend to the deployed frontend origin. Multiple origins may be separated with commas:
+Set the backend CORS environment variable to the frontend origin:
 
 ```env
 FRONTEND_URLS=https://cropcnn-1.onrender.com
 ```
 
-Vercel preview URLs ending in `.vercel.app` and Render frontend URLs ending in `.onrender.com` are also allowed by default. After changing backend CORS settings, redeploy or restart the backend; environment and code changes do not affect an already-running service.
+### Frontend service
 
-If deploying the frontend on Render instead, set **Root Directory** to `frontend`, **Build Command** to `npm install && npm run build`, and **Publish Directory** to `dist`. Set `VITE_API_URL` in the frontend service environment variables before deploying.
+Configure the Render frontend service with:
+
+```text
+Root Directory: frontend
+Build Command: npm install && npm run build
+Publish Directory: dist
+```
+
+Set the backend URL before building the frontend:
+
+```env
+VITE_API_URL=https://cropcnn.onrender.com
+```
+
+`VITE_API_URL` is embedded into the frontend during the build. Redeploy the frontend after changing it.
 
 ### Root endpoint
 
@@ -467,7 +494,7 @@ Accepts `multipart/form-data` with the uploaded image field `file`.
 
 ### Interactive docs
 
-Open `http://127.0.0.1:8000/docs` for the auto-generated Swagger UI.
+Open `http://127.0.0.1:8000/docs` locally, or https://cropcnn.onrender.com/docs in production, for the auto-generated Swagger UI.
 
 ---
 
@@ -626,6 +653,8 @@ CropCNN/
 │   └── images/                  # screenshots (training curves, confusion matrix)
 │
 ├── .gitignore
+├── render.yaml
+├── vercel.json
 └── README.md
 ```
 
@@ -793,16 +822,6 @@ Therefore the test accuracy should be interpreted as performance on this prepare
 5. **Mobile / edge deployment** — convert the model to TensorFlow Lite or ONNX.
 6. **Cloud deployment** — deploy the FastAPI backend and host the frontend separately.
 7. **Agricultural decision support** — combine classification with disease detection, crop health, soil/weather information, and irrigation recommendations.
-
----
-
-## 👨‍💻 Author
-
-**Subash**
-
-GitHub: `https://github.com/subash3650`
-
-Project: `https://github.com/subash3650/CropCNN`
 
 ---
 
